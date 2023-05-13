@@ -14,17 +14,17 @@ export default defineConfig({
     
     alias: {
       "@": path.resolve(__dirname, "src"),
-      react: path.resolve(__dirname, "src/react/packages/react"),
-      "react-dom": path.resolve(__dirname, "src/react/packages/react-dom"),
+      react: path.resolve(__dirname, "src/react/react"),
+      "react-dom": path.resolve(__dirname, "src/react/react-dom"),
       "react-dom-bindings": path.posix.resolve(
-        "src/react/packages/react-dom-bindings"
+        "src/react/react-dom-bindings"
       ),
       "react-reconciler": path.resolve(
         __dirname,
-        "src/react/packages/react-reconciler"
+        "src/react/react-reconciler"
       ),
-      scheduler: path.resolve(__dirname, "src/react/packages/scheduler"),
-      shared: path.resolve(__dirname, "src/react/packages/shared"),
+      scheduler: path.resolve(__dirname, "src/react/scheduler"),
+      shared: path.resolve(__dirname, "src/react/shared"),
     },
   },
   plugins: [react()],
