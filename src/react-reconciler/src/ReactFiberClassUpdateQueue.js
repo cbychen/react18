@@ -1,3 +1,4 @@
+import {markUpdateLaneFromFiberToRoot} from './ReactFiberConcurrentUpdates'
 export function initialUpdateQueue(fiber) {
 	// pending 是一个循环链表
 	const queue = {
@@ -10,7 +11,7 @@ export function initialUpdateQueue(fiber) {
 }
 
 
-function createUpdate(){
+export function createUpdate(){
 
   return {
   
@@ -47,7 +48,7 @@ function processUpdateQueue(fiber){
 
 }
 
-function enqueueUpdate(fiber,update){
+export function enqueueUpdate(fiber,update){
 
   const updateQueue = fiber.updateQueue
 
@@ -62,5 +63,10 @@ function enqueueUpdate(fiber,update){
     pending.next = update
     
   }
+
+  updateQueue.shared.pending = update
+
+  // 返回根节点
+  return markUpdateLaneFromFiberToRoot(fiber)
 
 }

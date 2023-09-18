@@ -10,4 +10,5 @@ console.log(element,'element')
 
 const root = createRoot(document.getElementById('root'))
 
+root.render(element)
 console.log(root)
