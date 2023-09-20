@@ -22,7 +22,7 @@ function getStateFromUpdate (update,newState){
 
 }
 
-function processUpdateQueue(fiber){
+export function processUpdateQueue(fiber){
 
   const queue   = fiber.updateQueue
   const pending = queue.shared.pending
