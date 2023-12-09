@@ -16,8 +16,8 @@ export function markUpdateLaneFromFiberToRoot(sourceFiber) {
   }
 
   if(node.tag==HostRoot) {
-  	return node.stateNode
-  }
+  	return node.stateNode  
+  }                       
 
   return null
 }
