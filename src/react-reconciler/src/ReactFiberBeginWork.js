@@ -1,8 +1,41 @@
 
 import logger from "shared/logger"
-import { HostComponent, HostRoot, HostText } from "./ReactWorkTags"
+import { HostComponent, HostRoot, HostText, IndeterminateComponent } from "./ReactWorkTags"
 import { processUpdateQueue } from "./ReactFiberClassUpdateQueue"
 import { mountChildFibers, reconcileChildFibers } from "./ReactChildFiber"
+import { createFiber } from "./ReactFiber"
+
+/**
+ * 根据虚拟dom节点创建fiber节点
+ * @param {*} element 
+ */
+export function createFiberFromElement(element) {
+	
+	const {type,key,pendingProps} = element
+
+	return createFiberFromTypeAndProps(type,key,pendingProps)
+
+}
+
+/**
+ * 
+ * @param {*} type 
+ * @param {*} key 
+ * @param {*} pendingProps 
+ */
+function createFiberFromTypeAndProps(type,key,pendingProps) {
+	
+	let tag = IndeterminateComponent
+	// if type is span div
+	if(typeof type === 'string'){
+
+		tag = HostComponent
+	}
+	const fiber =  createFiber(tag,pendingProps,key)
+	fiber.type = type
+	return fiber
+
+}
 
 /**
  * 根据新的虚拟dom生成新的fiber链表
@@ -17,6 +50,7 @@ function reconcileChildren(current,workInProgress,nextChildren) {
 		workInProgress.child = mountChildFibers(workInProgress,null,nextChildren)
 	}else{
 
+		debugger
 		workInProgress.child = reconcileChildFibers(workInProgress,current.child,nextChildren)
 
 	}
