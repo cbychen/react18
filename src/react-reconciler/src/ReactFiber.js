@@ -1,6 +1,52 @@
 
-import { HostRoot } from "./ReactWorkTags"
+import { HostComponent, HostRoot, HostText, IndeterminateComponent } from "./ReactWorkTags"
 import { NoFlags } from "./ReactFiberFlags"
+
+
+
+
+/**
+ * 根据虚拟dom节点创建fiber节点
+ * @param {*} element 
+ */
+export function createFiberFromElement(element) {
+	
+	const {type,key} = element
+  const pendingProps = element.props
+
+	return createFiberFromTypeAndProps(type,key,pendingProps)
+
+}
+
+export function createFiberFromText(content){
+
+  return createFiber(HostText,content,null)
+
+} 
+
+/**
+ * 
+ * @param {*} type 
+ * @param {*} key 
+ * @param {*} pendingProps 
+ */
+function createFiberFromTypeAndProps(type,key,pendingProps) {
+	
+	let tag = IndeterminateComponent
+	// if type is span div
+	if(typeof type === 'string'){
+
+		tag = HostComponent
+	}
+	const fiber =  createFiber(tag,pendingProps,key)
+	fiber.type = type
+	return fiber
+
+}
+
+
+
+
 /**
  * 
  * @param {*} tag 

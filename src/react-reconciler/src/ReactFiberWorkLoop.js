@@ -60,6 +60,10 @@ function workLoopSync() {
 
 
 
+/**
+ * 
+ * @param {*} unitOfWork 单个fiber
+ */
 function performUnitOfWork(unitOfWork) {
   
   // 获取新的fiber 对应的老的fiber

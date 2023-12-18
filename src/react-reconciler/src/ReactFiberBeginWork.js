@@ -1,41 +1,11 @@
 
 import logger from "shared/logger"
-import { HostComponent, HostRoot, HostText, IndeterminateComponent } from "./ReactWorkTags"
+import { HostComponent, HostRoot, HostText  } from "./ReactWorkTags"
 import { processUpdateQueue } from "./ReactFiberClassUpdateQueue"
 import { mountChildFibers, reconcileChildFibers } from "./ReactChildFiber"
-import { createFiber } from "./ReactFiber"
+import { shouldSetTextContent } from "react-dom-bindings/ReactDOMHostConfig"
 
-/**
- * 根据虚拟dom节点创建fiber节点
- * @param {*} element 
- */
-export function createFiberFromElement(element) {
-	
-	const {type,key,pendingProps} = element
 
-	return createFiberFromTypeAndProps(type,key,pendingProps)
-
-}
-
-/**
- * 
- * @param {*} type 
- * @param {*} key 
- * @param {*} pendingProps 
- */
-function createFiberFromTypeAndProps(type,key,pendingProps) {
-	
-	let tag = IndeterminateComponent
-	// if type is span div
-	if(typeof type === 'string'){
-
-		tag = HostComponent
-	}
-	const fiber =  createFiber(tag,pendingProps,key)
-	fiber.type = type
-	return fiber
-
-}
 
 /**
  * 根据新的虚拟dom生成新的fiber链表
@@ -97,8 +67,24 @@ function updateHostRoot(current, workInProgress) {
 }
 
 /**
- * updateHost 
+ * 构建原生组件的子fiber链表 
  * @param {*} current 
  * @param {*} workInProgress 
  */
-function updateHostComponent(current, workInProgress) {}
+function updateHostComponent(current, workInProgress) {
+
+	const {type} = workInProgress
+	const nextProps = workInProgress.pendingProps
+	let nextChildren = nextProps.children
+	// 判断当前虚拟dom的儿子是不是一个独生子
+	const isDirectChild = shouldSetTextContent(type,nextProps)
+
+	if(isDirectChild){
+		nextChildren = null
+	}
+
+	reconcileChildren(current, workInProgress, nextChildren)
+
+	return workInProgress.child
+
+}
