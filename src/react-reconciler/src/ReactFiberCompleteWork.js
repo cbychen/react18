@@ -50,8 +50,8 @@ export function completeWork(current, workInProgress) {
 
 			// 初始的儿子们挂载到自己身上
 
-			// // 把子节点挂载到真实dom上
-			// appendAllChildren(instance, workInProgress);
+			// 把子节点挂载到真实dom上
+			appendAllChildren(instance, workInProgress)
 			break;
 		case HostText:
 			const newText = newProps;
