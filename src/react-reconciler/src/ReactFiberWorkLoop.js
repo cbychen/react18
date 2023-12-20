@@ -2,6 +2,7 @@ import { scheduleCallback } from "scheduler/index";
 import { beginWork } from "./ReactFiberBeginWork";
 import { createWorkInProgress } from "./ReactFiber";
 import { completeWork } from "./ReactFiberCompleteWork";
+import logger from "shared/logger";
 let workInProgress = null
 /**
  * 调度更新root
@@ -27,6 +28,7 @@ function performConcurrentWorkOnRoot(root) {
 
 
   renderRootSync(root)
+  console.log('root',root)
 }
 
 
@@ -46,6 +48,10 @@ function renderRootSync(root) {
 }
 
 
+/**
+ * 根据原来老的创建新的根fiber
+ * @param {*} root 
+ */
 function prepareFreshStack(root) {
   
    workInProgress = createWorkInProgress(root.current,null)
@@ -71,13 +77,14 @@ function performUnitOfWork(unitOfWork) {
   const current = unitOfWork.alternate
 
   // 完成当前fiber的子fiber的链表构建
-  const next = beginWork(current, unitOfWork)
+  let next = beginWork(current, unitOfWork)
 
   unitOfWork.memoizedProps = unitOfWork.pendingProps
 
-  if(next===null) {
+  if(!next) {
   	// 没有子节点 已经完成了
 
+    
     workInProgress = null
     completeUnitOfWork(unitOfWork)
   }else{
@@ -96,6 +103,7 @@ function completeUnitOfWork(unitOfWork) {
     const current = completedWork.alternate;
 		// 完成当前fiber的子fiber的链表构建
 		let returnFiber = completedWork.return;
+    
     
     completeWork(current, completedWork)
 

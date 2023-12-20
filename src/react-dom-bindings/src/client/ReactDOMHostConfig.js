@@ -1,3 +1,4 @@
+import { setInitialProperties } from "./ReactDOMComponent";
 
 /**
  * 创建文本节点
@@ -40,8 +41,12 @@ export function appendInitialChild(parent,child){
   parent.appendChild(child);
 }
 
+
+
 export function finalizeInitialChildren(domElement,type,props){
-  // TODO 初始化子元素
+  // 初始化属性
+  setInitialProperties(domElement,type,props);
+
 }
 
 

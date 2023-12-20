@@ -15,12 +15,12 @@ import { shouldSetTextContent } from "react-dom-bindings/src/client/ReactDOMHost
  */
 function reconcileChildren(current,workInProgress,nextChildren) {
 
+	
 	if(current===null) {
 		
 		workInProgress.child = mountChildFibers(workInProgress,null,nextChildren)
 	}else{
 
-		debugger
 		workInProgress.child = reconcileChildFibers(workInProgress,current.child,nextChildren)
 
 	}

@@ -8,7 +8,6 @@ const element = (
 )
 console.log(element,'element')
 
-debugger
 const root = createRoot(document.getElementById('root'))
 
 root.render(element)

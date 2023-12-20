@@ -51,6 +51,7 @@ function createChildReconciler(shouldTrackEffects) {
 			// 让newFiber成为最后一个或者上一个子fiber
 			previousNewFiber = newFiber
 		}
+		return resultingFirstChild
 	}
 
 	function createChild(returnFiber, newChild) {
@@ -125,6 +126,7 @@ function createChildReconciler(shouldTrackEffects) {
 		}
 
 		if (Array.isArray(newChild)) {
+			
 			return reconcileChildrenArray(returnFiber, currentFirstFiber, newChild);
 		}
 

@@ -1,7 +1,7 @@
 import logger from "shared/logger";
 import { NoFlags } from "./ReactFiberFlags";
-import { appendInitialChild, createInstance, createTextInstance } from "react/-dom-bindings/src/client/ReactDOMHostConfig";
-import { HostComponent, HostText } from "./ReactWorkTags";
+import { appendInitialChild, createInstance, createTextInstance, finalizeInitialChildren } from "react-dom-bindings/src/client/ReactDOMHostConfig";
+import { HostComponent, HostRoot, HostText } from "./ReactWorkTags";
 
 
 /**
@@ -41,17 +41,28 @@ export function completeWork(current, workInProgress) {
 	logger("completeWork", workInProgress);
 	const newProps = workInProgress.pendingProps;
 
+	
 	switch (workInProgress.tag) {
+		case HostRoot:
+			bubbleProperties(workInProgress)
+			break
 		case HostComponent:
 			// 创建真实dom
+			const {type} = workInProgress
 			const instance = createInstance(workInProgress.type);
-			// 把真实dom挂载到fiber上
-			workInProgress.stateNode = instance;
+			
 
 			// 初始的儿子们挂载到自己身上
 
 			// 把子节点挂载到真实dom上
 			appendAllChildren(instance, workInProgress)
+			// 把真实dom挂载到fiber上
+			
+			workInProgress.stateNode = instance;
+
+			
+			finalizeInitialChildren(instance, type, newProps)
+			bubbleProperties(workInProgress);
 			break;
 		case HostText:
 			const newText = newProps;
