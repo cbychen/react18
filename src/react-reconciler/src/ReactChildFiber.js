@@ -30,6 +30,7 @@ function createChildReconciler(shouldTrackEffects) {
 		let resultingFirstChild = null; // 返回的第一个fiber
 		let previousNewFiber = null; //上一个新的fiber
 		let newIndex = 0;
+		debugger
 		for (; newIndex < newChildren.length; newIndex++) {
 			const newFiber = createChild(returnFiber, newChildren[newIndex]);
 
@@ -63,7 +64,7 @@ function createChildReconciler(shouldTrackEffects) {
 			created.return = returnFiber;
 			return created;
 		} else if (typeof newChild === "object" && newChild !== null) {
-			switch (newChild) {
+			switch (newChild.$$typeof) {
 				case REACT_ELEMENT_TYPE:
 					const created = createFiberFromElement(newChild);
 					created.return = returnFiber;
