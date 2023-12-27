@@ -1,4 +1,4 @@
-import { appendChild } from "react-dom-bindings/src/client/ReactDOMHostConfig";
+import { appendChild,insertBefore } from "react-dom-bindings/src/client/ReactDOMHostConfig";
 import { MutationMask, Placement } from "./ReactFiberFlags";
 import { HostComponent ,HostText,HostRoot} from "./ReactWorkTags";
 
@@ -61,29 +61,70 @@ export function commitMutationEffectsOnFiber(finishedWork, root) {
 /**
  * 把子节点对应的真实dom插入到父节点dom中 
  * @param {*} node 将要插入的fiber节点
+ * @param {*} before 
  * @param {*} parent 父亲真实dom节点
  */
-function insertNode(node, parent) {
+function insertOrAppendPlacementNode(node, before, parent) {
 	const { tag } = node;
 	// 判断fiber节点是不是真实的dom节点
 	const isRoot = tag === HostComponent || tag === HostText;
 	// 如果是的话直接插入
 	if (isRoot) {
 		const { stateNode } = node;
-		appendChild(parent, stateNode);
+		if (before) {
+			insertBefore(parent, stateNode, before);
+		}else{
+			appendChild(parent, stateNode);
+		}
+		
 	} else {
 		// node 不是真实的dom节点 获取他的大儿子
 		const { child } = node;
 		if (child !== null) {
 			// 大儿子添加到父亲dom
-			insertNode(child, parent);
+			insertOrAppendPlacementNode(child, parent);
 			let { sibling } = child;
 			while (sibling !== null) {
 				// 处理所有弟弟
-				insertNode(sibling, parent);
+				insertOrAppendPlacementNode(sibling, parent);
 				sibling = sibling.sibling;
 			}
 		}
+	}
+}
+/**
+ * 找到要插入的锚点
+ * @param {*} fiber 
+ */
+function getHostSibling(fiber) {
+	let node = fiber;
+	sibling: while (true) {
+		while (node.sibling === null) {
+			// 没有弟弟了 找叔叔
+			if (node.return === null || isHostParent(node.return)) {
+				// 没有叔叔了 找爷爷
+				return null;
+			}
+			node = node.return;
+		}
+		node = node.sibling;
+
+		// 如果弟弟不是原生节点也不是文本节点的时候
+		while (node.tag !== HostComponent && node.tag !== HostText) {
+			// 如果一个子节点是将要插入的新节点 找他的弟弟
+		
+			if(node.flags & Placement){
+				continue sibling;
+			}else{
+
+				// 找他的大儿子
+				node =  node.child
+			}
+		}
+		if(!(node.flags & Placement))	{
+			return node.stateNode;
+		}
+		return node.stateNode;
 	}
 }
 
@@ -115,13 +156,15 @@ function commitPlacement(finishedWork) {
 		case HostRoot: {
 			const parent = parentFiber.stateNode.containerInfo;
 
-			insertNode(finishedWork, parent);
+			const before = getHostSibling(finishedWork);
+			insertOrAppendPlacementNode(finishedWork, before, parent);
 			break;
 		}
 
 		case HostComponent: {
 			const parent = parentFiber.stateNode;
-			insertNode(finishedWork, parent);
+			const before = getHostSibling(finishedWork);
+			insertOrAppendPlacementNode(finishedWork, before, parent);
 			break;
 		}
 

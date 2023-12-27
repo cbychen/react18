@@ -62,3 +62,8 @@ export function resetAfterCommit(){
 export function appendChild(parent, child) {
 	parent.appendChild(child);
 }
+
+export function insertBefore(parent,child,beforeChild){
+
+  parent.insertBefore(child,beforeChild);
+}
