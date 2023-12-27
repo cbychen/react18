@@ -3,6 +3,8 @@ import { beginWork } from "./ReactFiberBeginWork";
 import { createWorkInProgress } from "./ReactFiber";
 import { completeWork } from "./ReactFiberCompleteWork";
 import logger from "shared/logger";
+import {commitMutationEffectsOnFiber} from './ReactFiberCommitWork'
+import { MutationMask, NoFlags } from "./ReactFiberFlags";
 let workInProgress = null
 /**
  * 调度更新root
@@ -28,9 +30,29 @@ function performConcurrentWorkOnRoot(root) {
 
 
   renderRootSync(root)
-  console.log('root',root)
+
+  // 开始进入提交阶段 就是执行副作用 修改真实dom
+  const finishedWork = root.current.alternate
+  root.finishedWork = finishedWork
+
+  commitRoot(root)
 }
 
+
+function commitRoot(root) {
+  console.log('commitRoot',root)
+
+  const {finishedWork} = root
+  const subtreeHasEffects = (finishedWork.subtreeFlags & MutationMask) !== NoFlags
+
+  const rootHasEffects = (finishedWork.flags & MutationMask) !== NoFlags
+
+  if(subtreeHasEffects || rootHasEffects) {
+    commitMutationEffectsOnFiber(finishedWork,root)
+  }
+
+  root.current = finishedWork
+}
 
 /**
  * 同步方式渲染根节点

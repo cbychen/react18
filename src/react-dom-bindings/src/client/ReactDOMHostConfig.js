@@ -58,3 +58,7 @@ export function prepareForCommit(){
 export function resetAfterCommit(){
   // TODO 提交后重置
 }
+
+export function appendChild(parent, child) {
+	parent.appendChild(child);
+}

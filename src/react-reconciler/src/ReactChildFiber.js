@@ -30,7 +30,6 @@ function createChildReconciler(shouldTrackEffects) {
 		let resultingFirstChild = null; // 返回的第一个fiber
 		let previousNewFiber = null; //上一个新的fiber
 		let newIndex = 0;
-		debugger
 		for (; newIndex < newChildren.length; newIndex++) {
 			const newFiber = createChild(returnFiber, newChildren[newIndex]);
 
