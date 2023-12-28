@@ -82,11 +82,11 @@ function insertOrAppendPlacementNode(node, before, parent) {
 		const { child } = node;
 		if (child !== null) {
 			// 大儿子添加到父亲dom
-			insertOrAppendPlacementNode(child, parent);
+			insertOrAppendPlacementNode(child,before, parent);
 			let { sibling } = child;
 			while (sibling !== null) {
 				// 处理所有弟弟
-				insertOrAppendPlacementNode(sibling, parent);
+				insertOrAppendPlacementNode(sibling,before, parent);
 				sibling = sibling.sibling;
 			}
 		}
