@@ -73,8 +73,6 @@ export function completeWork(current, workInProgress) {
 			// 向上冒泡属性
 			bubbleProperties(workInProgress);
 			break;
-		case ClassComponent:
-			break;
 		default:
 			break;
 	}
