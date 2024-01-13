@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>event</title>
+</head>
+<body>
+ <div id="root">
+  <div id="parent" onClick="parentBubble()" onClickCapture="parentCapture()">
+    <div id="child" onClick="childBubble()" onClickCapture="childCapture()">click</div>
+  </div>
+ </div> 
+</body>
+</html>
+<script>
+  let root = document.getElementById('root')
+  let parent = document.getElementById('parent')
+  let child = document.getElementById('child')
+  child.onClick = childBubble
+  child.onClickCapture = childCapture
+  parent.onClick = parentBubble
+  parent.onClickCapture = parentCapture
+ 
+  // 事件委托
+  root.addEventListener('click', (event)=>dispatchEvent(event,true), true)
+  
+  root.addEventListener('click', (event)=>dispatchEvent(event,false), false)
+  
+  parent.addEventListener('click',()=>{
+
+    console.log('parent 捕获')
+  },true)
+
+  parent.addEventListener('click',()=>{
+
+    console.log('parent 冒泡')
+  }, false)
+
+  child.addEventListener('click',()=>{
+
+    console.log('child 捕获')
+  }, true)
+
+  child.addEventListener('click', () => {
+
+    console.log('child 冒泡')
+  }, false)
+  function dispatchEvent(event, useCapture) {
+    let paths = []
+    let currentTarget = event.target
+    while (currentTarget) {
+      paths.push(currentTarget)
+      currentTarget = currentTarget.parentNode
+    }
+    if(useCapture){
+
+      for (let index = paths.length-1; index >0; index--) {
+        
+        let handler = paths[index].onClickCapture
+        handler && handler()
+      }
+    }else{
+      for (let index = 0; index <paths.length; index++) {
+        
+        let handler = paths[index].onClick
+        handler && handler()
+      }
+    }
+  }
+
+
+  var parentBubble =()=>{
+    console.log('父React冒泡');
+  }
+  var parentCapture = () => {
+    console.log('父React捕获');
+  }
+  var childBubble = () => {
+    console.log('子React冒泡');
+  }
+  var childCapture = () => {
+    console.log('子React捕获');
+  }
+
+
+</script>
